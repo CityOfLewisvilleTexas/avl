@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Log out</title>
+
+</head>
+<body>
+	<h1 id="message">Logging off...</h1>
+
+	<script type="text/javascript">
+	(function(){
+		//alert(localStorage.colAuthToken + ' /n ' + localStorage.redirectUrl);
+		if (location.host === 'apps'){
+			window.location = 'http://apps.cityoflewisville.com/logout';
+		}
+		localStorage.removeItem('colAuthToken');
+		localStorage.removeItem('redirectUrl');
+		//localStorage.removeItem('colEmail');
+		if (typeof localStorage.colAuthToken === 'undefined' && typeof localStorage.redirectUrl === 'undefined'){
+			document.getElementById('message').innerHTML = 'You have been successfully logged out';
+		}
+	})();
+	</script>
+</body>
+</html>
