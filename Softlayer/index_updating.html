@@ -28,7 +28,7 @@
 	<!-- Night modifications for Bootstrap -->
 	<link rel="stylesheet" href="stylesheets/bootstrapNight.css?1">
 	<!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="stylesheets/app.css?2">
+    <link rel="stylesheet" href="stylesheets/app_updating.css?2">
 	
 	<!-- JQUERY for LiveData -->
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
@@ -79,6 +79,7 @@
 	
 	<!---------------------------------->
 	
+	<script src="components/zoom-control.js?2"></script>
 	<script src="components/traffic-control.js"></script>
 	<script src="components/night-control.js"></script>
 	<script src="components/center-control.js?1"></script>
@@ -221,6 +222,7 @@
 <!-- UPDATE FOR Google Maps V3.32 - CLarson 8/10/18 remove from map v-on:g-idle="resizeMap"-->
 						<map v-if="mapLoaded" :center.sync="centerV" :zoom.sync="zoomV" :bounds.sync="mapBounds" :options="mapOptions" v-on:g-idle="mapIdling" id="map" v-ref:map>
 						
+							<zoom-control></zoom-control>
 							<traffic-control></traffic-control>
 							<center-control></center-control>
 							
@@ -886,10 +888,10 @@ var app = new Vue({
 		
 		mapOptions: function(){
 			if(!(this.nightMode)){
-				return{fullscreenControl: false, streetViewControl: true, gestureHandling: 'greedy', styles: null};
+				return{zoomControl: false, fullscreenControl: false, streetViewControl: true, gestureHandling: 'greedy', styles: null};
 			}
 			else{
-				return{fullscreenControl: false, streetViewControl:true, gestureHandling: 'greedy', styles: this.night};
+				return{zoomControl: false, fullscreenControl: false, streetViewControl:true, gestureHandling: 'greedy', styles: this.night};
 			}
 		},
 		
