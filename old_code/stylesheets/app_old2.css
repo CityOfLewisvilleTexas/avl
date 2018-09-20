@@ -1,0 +1,353 @@
+#leftSide, #rightSide, #extraPanel {
+	padding: 0;
+}
+#extraPanel .panel-body {
+	padding: 0;
+}
+#list.panel-group, #vehicleList .panel-group {
+	margin-bottom: 0;
+}
+#extraPanel {
+	height: calc(100vh - 51px);
+	overflow-y: auto;
+	border-left: 2px solid black;
+}
+#narrativeFeed{
+	height: 150px;
+	overflow-y: auto;
+	border-top: 2px solid black;
+}
+
+#map{
+	height: 100%;
+	width: 100%;
+}
+
+a{
+	cursor: pointer;
+
+}
+
+.navbar-inverse {
+	/*background-color: #673ab7;*/
+	background-color: #5d2490;
+	border-color: #421966;
+	/*box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);*/
+}
+.navbar-inverse .navbar-brand{
+	color: #fff;
+}
+.nav-city-logo{
+	height: 50px !important;
+}
+.navbar-inverse .navbar-text, .navbar-inverse .navbar-nav > li > a {
+	color: #fff;
+}
+.navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus{
+	color: #80CC28;
+}
+.navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus, .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:focus, .navbar-inverse .navbar-nav>.open>a:hover {
+	background-color: #421966;
+}
+.navbar-inverse .navbar-nav > li > .btn-link > .badge, .navbar-inverse .navbar-header > span > li > .btn-link > .badge{
+	color: #5d2490;
+	background-color: #fff;
+}
+.navbar-inverse .navbar-nav > li > .btn-link:hover > .badge, .navbar-inverse .navbar-header > span > li > .btn-link:hover > .badge{
+	background-color: #80CC28;
+}
+
+.navbar-header{
+	list-style: none;
+}
+.navbar-right{
+	padding-right: 15px !important;
+}
+.navBtn{
+	padding-top: 8px !important;
+}
+/*.brand-ul {
+	list-style: none;
+	float: none!important;
+    margin-top: 7.5px;
+}
+.brand-ul > li {
+	float: left;
+	position: relative;
+	display: block;
+}*/
+
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:focus, .dropdown-menu > .active > a:hover {
+	background-color: #5d2490;
+}
+.dropdown-header{
+	color: #80CC28;
+}
+
+.table{
+	margin-bottom: 0px;
+}
+.gly-spin {
+	-webkit-animation: spin 2s infinite linear;
+	-moz-animation: spin 2s infinite linear;
+	-o-animation: spin 2s infinite linear;
+	animation: spin 2s infinite linear;
+}
+.table-striped>tbody>tr.success:nth-of-type(even)>td{
+	background-color: #EEF7EB !important;
+}
+.table-hover>tbody>tr.success:nth-of-type(even):hover>td{
+	background-color: #d0e9c6 !important;
+}
+
+td.layerCell{
+	cursor: pointer;
+}
+td.legendCell {
+	padding-top: 4px !important;
+	padding-bottom: 4px !important;
+}
+.legendTitle{
+	margin-left: 4px;
+	margin-right: 4px;
+}
+.legendTitle > button{
+	margin-right: 4px;
+}
+
+#narrativeFeed tr, #vehicleList tr {
+	cursor: pointer;
+}
+
+/* panel.vue */
+.collapse-transition {
+	transition: max-height .5s ease;
+	overflow: hidden;
+	max-height: 9999px;
+}
+
+/* Map control */
+.controlUI{
+	background-color: rgb(255,255,255);
+	border-radius: 2px;
+	box-shadow: rgba(0,0,0,0.298039) 0px 1px 4px -1px;
+	cursor: pointer;
+	margin: 10px;
+	text-align: center;
+}
+.controlText{
+	color: rgb(25,25,25);
+	font-family: Roboto, Arial, sans-serif;
+	font-size: 11px;
+	padding: 8px;
+}
+.controlBold{
+	font-weight: 500;
+}
+
+/* set map and list height at side by side height */
+@media only screen and (min-width:992px){
+	#leftSide, #mapDiv{
+		height: calc(100vh - 51px);
+	}
+	.narrative #mapDiv {
+		height: calc(100vh - 201px);
+	}
+	#rightSide {
+		height: calc(100vh - 51px);
+		overflow-y: auto;
+		border-left: 2px solid black;
+	}
+	.hide-out-collapse{
+		display:none !important;
+	}
+	.navbar-right label{
+		padding-top: 10px !important;
+	}
+	
+	/* positions autocomplete for place input below navbar */
+	div.pac-container.pac-logo {
+		top: 50px !important;
+	}
+}
+
+/* set list height at side by side height */
+@media only screen and (max-width:991px){
+	#leftSide, #mapDiv{
+		height: calc(50vh - 25.5px);
+	}
+	#rightSide{
+		height: calc(50vh - 25.5px);
+		overflow-y: auto;
+		border-top: 2px solid black;
+	}
+	
+	.landscape #leftSide, .landscape #mapDiv, .landscape #rightSide{
+		height: calc(100vh - 51px);
+	}
+	.landscape #rightSide{
+		border-left: 2px solid black;
+		border-top: none;
+	}
+	.landscape #rightSide.fullScreen{
+		border-left: none;
+	}
+	
+	.narrative #leftSide {
+		height: calc(50vh + 49.5px);
+	}
+	.narrative #rightSide{
+		height: calc(50vh - 100.5px);
+	}
+	.narrative #mapDiv{
+		height: calc(50vh - 100.5px);
+	}
+	
+	.narrative.landscape #leftSide, .narrative.landscape #rightSide{
+		height: calc(100vh - 51px);
+	}
+	.narrative.landscape #mapDiv{
+		height: calc(100vh - 201px);
+	}
+	
+	#leftSide.fullScreen, #leftSide.fullScreen #mapDiv{
+		height: calc(100vh - 51px);
+	}
+	#rightSide.fullScreen{
+		height: calc(100vh - 51px);
+	}
+	
+	.narrative #leftSide.fullScreen #mapDiv, .narrative #rightSide.fullScreen{
+		height: calc(100vh - 201px);
+	}
+	
+	.fullRight #leftSide{
+		display: none;
+	}
+	.narrative.fullRight #leftSide {
+		display: block;
+		height: 150px;
+	}
+	.narrative.fullRight #narrativeFeed {
+		border-top: none;
+	}
+	.narrative.landscape.fullRight #narrativeFeed{
+		border-bottom: 2px solid black;
+	}
+	
+	.hide-in-collapse{
+		display:none !important;
+	}
+	
+	/* change color for purple navbar */
+	.navbar-inverse .navbar-toggle:focus, .navbar-inverse .navbar-toggle:hover{
+		background-color: #421966;
+		border-color: #421966;
+	}
+	
+	/* change breakpoint for navbar collapse */
+	.navbar-header {
+		float: none;
+	}
+	.navbar-left,.navbar-right {
+		float: none !important;
+	}
+	.navbar-toggle {
+		display: block;
+	}
+	.navbar-collapse {
+		border-top: 1px solid transparent;
+		box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+	}
+	.navbar-fixed-top {
+		top: 0;
+		border-width: 0 0 1px;
+	}
+	.navbar-collapse.collapse {
+		display: none!important;
+	}
+	.navbar-nav {
+		float: none!important;
+		margin-top: 7.5px;
+	}
+	.navbar-nav>li {
+		float: none;
+	}
+	.navbar-nav>li>a {
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+	.collapse.in{
+		display:block !important;
+	}
+	
+}
+
+@media only screen and (max-width:991px) and (min-width:768px){
+	/* cancels the float: none Bootstrap style auto applied for tablet navbar-left */
+	a.navbar-left{
+		float: left !important;
+	}
+	/* positions autocomplete for place input below navbar */
+	div.pac-container.pac-logo {
+		top: 223px !important;
+	}
+}
+
+@media only screen and (max-width:767px){
+	/* positions autocomplete for place input below navbar */
+	div.pac-container.pac-logo {
+		top: 190px !important;
+	}
+	
+	/* Change color for purple navbar */
+	.navbar-inverse .navbar-nav .open .dropdown-menu>.active>a, .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a:focus, .navbar-inverse .navbar-nav .open .dropdown-menu>.active>a:hover {
+		color: #fff;
+		background-color: #421966;
+	}
+	.navbar-inverse .navbar-nav .open .dropdown-menu > li > a{
+		color: #fff;
+	}
+	.navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover, .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:focus{
+		color: #80CC28;
+	}
+}
+
+
+/* change breakpoint for navbar collapse
+@media only screen and (max-width:991px) {
+  .navbar-header {
+      float: none;
+  }
+  .navbar-left,.navbar-right {
+      float: none !important;
+  }
+  .navbar-toggle {
+      display: block;
+  }
+  .navbar-collapse {
+      border-top: 1px solid transparent;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .navbar-fixed-top {
+      top: 0;
+      border-width: 0 0 1px;
+  }
+  .navbar-collapse.collapse {
+      display: none!important;
+  }
+  .navbar-nav {
+      float: none!important;
+      margin-top: 7.5px;
+  }
+  .navbar-nav>li {
+      float: none;
+  }
+  .navbar-nav>li>a {
+      padding-top: 10px;
+      padding-bottom: 10px;
+  }
+  .collapse.in{
+      display:block !important;
+  }
+}*/

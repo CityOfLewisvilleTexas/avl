@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Local Storage</title>
+
+</head>
+<body>
+	<h1 id="message">My Local Storage Info</h1>
+	
+	<h1>Timestamp: <span id="ti"></span></h1>
+	<h1>colEmail: <span id="email"></span><h1>
+	<h3>colAuthToken: <span id="token"></span><h3>
+	<h4>redirectUrl: <span id="redir"></span><h4>
+	
+	<script type="text/javascript">
+	(function(){
+		if (location.host === 'apps'){
+			window.location = 'http://apps.cityoflewisville.com/myLocalStorage';
+		}
+		if (typeof localStorage.colAuthToken === 'undefined' && typeof localStorage.redirectUrl === 'undefined' && typeof localStorage.colEmail === 'undefined'){
+			document.getElementById('message').innerHTML = 'No user currently logged in';
+		}
+		else{
+			document.getElementById('ti').innerHTML = new Date;
+			document.getElementById('email').innerHTML = localStorage.colEmail;
+			document.getElementById('token').innerHTML = localStorage.colAuthToken;
+			document.getElementById('redir').innerHTML = localStorage.redirectUrl;
+		}
+	})();
+	</script>
+</body>
+</html>
