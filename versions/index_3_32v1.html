@@ -28,7 +28,7 @@
 	<!-- Night modifications for Bootstrap -->
 	<link rel="stylesheet" href="stylesheets/bootstrapNight.css?1">
 	<!-- Custom Stylesheet -->
-    <link rel="stylesheet" href="stylesheets/app_updating.css?2">
+    <link rel="stylesheet" href="stylesheets/app.css?2">
 	
 	<!-- JQUERY for LiveData -->
 	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
@@ -79,16 +79,15 @@
 	
 	<!---------------------------------->
 	
-	<script src="components/zoom-control.js?2"></script>
 	<script src="components/traffic-control.js"></script>
 	<script src="components/night-control.js"></script>
 	<script src="components/center-control.js?1"></script>
 	<script src="components/traffic-layer.js"></script>
-	<script src="components/kml-layer_32.js"></script>
-	<script src="components/map-service-layer.js"></script>
-	<script src="components/tile-cache-layer.js"></script>
-	<script src="components/wms-layer.js"></script>
-	<script src="components/map-service-layer-dark.js"></script>
+	<script src="components/kml-layer.js"></script>
+	<script src="components/map-service-obj_v3.32.js"></script>
+	<script src="components/tile-cache-obj.js"></script>
+	<script src="components/map-service-obj-dark_v3.32.js"></script>
+	<script src="components/tile-cache-obj-dark.js"></script>
 	
 </head>
 
@@ -222,7 +221,6 @@
 <!-- UPDATE FOR Google Maps V3.32 - CLarson 8/10/18 remove from map v-on:g-idle="resizeMap"-->
 						<map v-if="mapLoaded" :center.sync="centerV" :zoom.sync="zoomV" :bounds.sync="mapBounds" :options="mapOptions" v-on:g-idle="mapIdling" id="map" v-ref:map>
 						
-							<zoom-control></zoom-control>
 							<traffic-control></traffic-control>
 							<center-control></center-control>
 							
@@ -269,12 +267,12 @@
 								</info-window>
 							</marker>
 							
+							<!--<kml-layer url="https://sites.google.com/a/cityoflewisville.com/gis/files/CityLimits_Gray.kml"></kml-layer>-->
 							<traffic-layer v-if="showTrafficLayer"></traffic-layer>
-							<kml-layer v-if="mapBoundsSet2" v-for="lyr in filterLayersByFiletype('kml')" :layer.sync="lyr"></kml-layer>
-							<map-service-layer v-if="mapBoundsSet2" v-for="lyr in filterLayersByFiletype('mapservice')" :layer.sync="lyr"></map-service-layer>
-							<tile-cache-layer v-if="mapBoundsSet2" v-for="lyr in filterLayersByFiletype('tilecache')" :layer.sync="lyr"></tile-cache-layer>
-							<!--<wms-layer v-if="mapBoundsSet2" v-for="lyr in filterLayersByFiletype('wms')" :layer.sync="lyr"></wms-layer>-->
-							<map-service-layer-dark v-if="mapBoundsSet2" v-for="lyr in filterDarkLayersByFiletype('mapservice')" :layer.sync="lyr"></map-service-layer-dark>
+							<map-service-obj v-if="mapBoundsSet2" v-for="lyr in filterLayersByFiletype('mapservice')" :layer.sync="lyr"></map-service-obj>
+							<!--<tile-cache-obj v-if="mapBoundsSet2" v-for="lyr in filterLayersByFiletype('tilecache')" :layer.sync="lyr"></tile-cache-obj>-->
+							<map-service-obj-dark v-if="mapBoundsSet2" v-for="lyr in filterDarkLayersByFiletype('mapservice')" :layer.sync="lyr"></map-service-obj-dark>
+							<!--<tile-cache-obj-dark v-if="mapBoundsSet2" v-for="lyr in filterDarkLayersByFiletype('tilecache')" :layer.sync="lyr"></tile-cache-obj-dark>-->
 						</map>
 					</div>
 					<div id="narrativeFeed" v-if="showNarrative">
@@ -341,8 +339,8 @@
 								<table class="table table-condensed table-hover layersTable">
 									<tbody>
 										<tr v-for="lyr in filterLayersByGroup(group.id)">
-											<td v-on:click="layerToggle(lyr)" colspan="{{lyr.legendshow.toLowerCase() == 'true' ? '1': '2'}}" class="layerCell" v-bind:class="[{'invalidFileType': !(lyr.isValidFileType)}]"></>
-												<small><span class="glyphicon" v-bind:class="[{'glyphicon-plus': (lyr.isValidFileType && !(lyr.active)), 'glyphicon-ok': (lyr.isValidFileType && lyr.active), 'glyphicon-ban-circle': !(lyr.isValidFileType)}]"></span></small>
+											<td v-on:click="layerToggle(lyr)" colspan="{{lyr.legendshow.toLowerCase() == 'true' ? '1': '2'}}" class="layerCell">
+												<small><span class="glyphicon" v-bind:class="[{'glyphicon-plus': !(lyr.active), 'glyphicon-ok': lyr.active}]"></span></small>
 												{{lyr.label}}
 												<span class="glyphicon glyphicon-refresh gly-spin" v-if="lyr.isloading"></span>
 											</td>
@@ -472,8 +470,6 @@ var app = new Vue({
 		data: {Calls: [], Notes: []},
 		data2: {Vehicles:[]},
 		layers: [],
-		layersToggleOrder: [],
-		layersMapTypeOrder: [],
 		countActiveLayers: 0,	// what what this going to be used for?
 		
 		datenow: '',
@@ -888,10 +884,10 @@ var app = new Vue({
 		
 		mapOptions: function(){
 			if(!(this.nightMode)){
-				return{zoomControl: false, fullscreenControl: false, streetViewControl: true, gestureHandling: 'greedy', styles: null};
+				return{fullscreenControl: false, streetViewControl: true, gestureHandling: 'greedy', styles: null};
 			}
 			else{
-				return{zoomControl: false, fullscreenControl: false, streetViewControl:true, gestureHandling: 'greedy', styles: this.night};
+				return{fullscreenControl: false, streetViewControl:true, gestureHandling: 'greedy', styles: this.night};
 			}
 		},
 		
@@ -1080,16 +1076,9 @@ var app = new Vue({
 				return a.order - b.order;
 			});
 		},
-		filterLayers_Active: function(){
-			return this.layers.filter(function(lyr){
-				return (lyr.active == true);
-			}).sort(function(a, b){
-				return a.toggleOrder - b.toggleOrder;
-			});
-		},
 		filterLayers_Legend: function(){
-			return this.filterLayers_Active.filter(function(lyr){
-				return (lyr.filetype.toLowerCase() == 'mapservice' && lyr.legendshow.toLowerCase() == "true" && (lyr.legend.length > 0) );
+			return this.layers.filter(function(lyr){
+				return (lyr.filetype.toLowerCase() == 'mapservice' && lyr.active == true && lyr.legendshow.toLowerCase() == "true" && (lyr.legend.length > 0) );
 			}).sort(function(a, b){
 				return a.toggleOrder - b.toggleOrder;
 			});
@@ -1205,14 +1194,14 @@ var app = new Vue({
 		
 		filterLayersByFiletype: function(type){
 			var self = this;
-			return this.filterLayers_Active.filter(function(lyr){
-				return lyr.filetype.toLowerCase() == type && !(self.nightMode && lyr.urldark.length > 0);
+			return this.layers.filter(function(lyr){
+				return lyr.filetype.toLowerCase() == type && lyr.active == true && !(self.nightMode && lyr.urldark);
 			});
 		},
 		filterDarkLayersByFiletype: function(type){
 			var self = this;
-			return this.filterLayers_Active.filter(function(lyr){
-				return lyr.filetype.toLowerCase() == type && (self.nightMode && lyr.urldark.length > 0);
+			return this.layers.filter(function(lyr){
+				return lyr.filetype.toLowerCase() == type && lyr.active == true && (self.nightMode && lyr.urldark);
 			});
 		},
 		filterLayersByGroup: function(group){
@@ -1582,100 +1571,26 @@ var app = new Vue({
 			return;
 		},
 		
-		addLayerToggleOrder: function(lyr){
-			var len;
-			var len2;
-			
-			lyr.isloading = true;
-			
-			len = this.layersToggleOrder.push(lyr.id);	// add layer's id to array, returns new array length
-			this.countActiveLayers++;
-			lyr.toggleOrder = len;	 // set layer toggle order (first will be 1)
-			
-			if(lyr.filetype.toLowerCase() == "mapservice" || lyr.filetype.toLowerCase() == "kml"){
-				lyr.active = true;
-			}
-			if(lyr.filetype.toLowerCase() == "tilecache"){		// || lyr.filetype.toLowerCase() == "wms"){
-				len2 = this.layersMapTypeOrder.push(lyr.id);		// [tilecache & wms] add layer's id to array, returns new array length
-				lyr.mapTypeIndex = len2 - 1;
-				lyr.active = true;
-				//console.log("addLayerToggleOrder " + lyr.id + ": toggleOrder " + lyr.toggleOrder + ", mapTypeIndex " + lyr.mapTypeIndex);
-			}
-		},
-		removeLayerToggleOrder: function(lyr){
-			//console.log("removeLayerToggleOrder " + lyr.id + ": toggleOrder " + lyr.toggleOrder + ", mapTypeIndex " + lyr.mapTypeIndex);
-			var self = this;
-			lyr.active = false;
-			var i = this.layersToggleOrder.indexOf(lyr.id);		// find layer's id in array (index start at 0)
-			var otherID;
-			var otherLyr;
-			if(i > -1){
-				this.layersToggleOrder.splice(i,1)		// remove layer's id from array
-				this.countActiveLayers--;
-				lyr.toggleOrder = 0;	// set layer's toggle order to 0
-				// for each remaining layer in array, find in app.layers, decrement their toggleOrder
-				for(i; i < this.layersToggleOrder.length; i++){
-					otherID = self.layersToggleOrder[i];
-					otherLyr = self.filterLayers_Active.find(function(oLayer){
-						return oLayer.id == otherID;
-					})
-					if(otherLyr){
-						otherLyr.toggleOrder--;
-					}
-				}
-				
-				if(lyr.filetype.toLowerCase() == "tilecache"){ 		//|| lyr.filetype.toLowerCase() == "wms"){
-					var i2 = this.layersMapTypeOrder.indexOf(lyr.id);		// [tilecache & wms] find layer's id in array (index start at 0)
-					if(i2 > -1){
-						this.layersMapTypeOrder.splice(i2,1)		// [tilecache & wms] remove layer's id from array
-						// [tilecache & wms] for each remaining layer in array, find in app.layers, decrement their toggleOrder
-						for(i2; i2 < this.layersMapTypeOrder.length; i2++){
-							otherID = self.layersMapTypeOrder[i2];
-							otherLyr = self.filterLayers_Active.find(function(oLayer){
-								return oLayer.id == otherID;
-							})
-							if(otherLyr){
-								otherLyr.mapTypeIndex--;
-							}
-						}
-					}
-					else{
-						console.log("layer mapTypeIndex not added");
-					}
-				}
-			}
-			else{
-				console.log("layer toggleOrder not added");
-			}
-		},
-		
 		layerToggle: function(lyr){
 			// DECLARE VARIABLES
-			if(lyr.filetype.toLowerCase() == "mapservice" || lyr.filetype.toLowerCase() == "tilecache" || lyr.filetype.toLowerCase() == "kml"){
-				var self = this;
-				var len;
+			var self = this;
+			
+			if(lyr.active === false){
+				self.countActiveLayers++;
+				lyr.toggleOrder = self.countActiveLayers;
 				
-				if(lyr.active === false){
-					/*self.countActiveLayers++;
-					lyr.toggleOrder = self.countActiveLayers;
-					
-					if(lyr.filetype.toLowerCase() == "mapservice"){
-						lyr.active = true;
-					}
-					if(lyr.filetype.toLowerCase() == "tilecache"){
-						lyr.active = true;
-					}
-					*/
-					this.addLayerToggleOrder(lyr);
-					
+				if(lyr.filetype.toLowerCase() == "mapservice"){
+					lyr.active = true;
 				}
-				else{
-					/*lyr.active = false;
-					self.countActiveLayers--;
-					lyr.toggleOrder = 0;
-					*/
-					this.removeLayerToggleOrder(lyr);
+				if(lyr.filetype.toLowerCase() == "tilecache"){
+					lyr.active = true;
 				}
+				
+			}
+			else{
+				lyr.active = false;
+				self.countActiveLayers--;
+				lyr.toggleOrder = 0;
 			}
 			return;
 		},
@@ -1704,19 +1619,14 @@ var app = new Vue({
 					
 					// Set other properties for each layer object
 					lyr.isloading = false;
-					lyr.toggleOrder = 0; //parseInt(9 + lyr.id);
-					lyr.mapTypeIndex = null; //parseInt(9 + lyr.id);
+					lyr.toggleOrder = parseInt(9 + lyr.id);
 					lyr.mapservice = {};
 					lyr.legend = [];
-					lyr.isValidFileType = false;
-					if(lyr.filetype.toLowerCase() =='mapservice' || lyr.filetype.toLowerCase() =='tilecache' || lyr.filetype.toLowerCase() =='kml'){
-						lyr.isValidFileType = true;
-					}
 					
 					// Activate layers if open on load is true
 					//if(lyr.id == 1005){
 					if(lyr.avlopenonload.toLowerCase() == "true"){
-						app.addLayerToggleOrder(lyr);
+						lyr.active = true;
 					}
 					else{
 						lyr.active = false;
@@ -2183,7 +2093,7 @@ var app = new Vue({
 		},
 	},
 	ready: function() {
-		console.log('AVL 3.4 Polling Version updated 9/20/18 for Google Maps 3.32 - Vehicles polling every 1 second');
+		console.log('AVL 3.4 Polling Version updated 8/14/18 for Google Maps 3.32 - Vehicles polling every 1 second');
 		
 		// Solution: https://github.com/vuejs/vue/issues/1915
 		window.addEventListener('resize', this.handleResize);
@@ -2379,7 +2289,7 @@ var vueGoogleMapsInit = function(){
 		};
 	}
 
-	script.src = 'scripts/arcgislink3.32_8-17.js';
+	script.src = 'scripts/arcgislink3.32.js';
 	document.body.appendChild( script );
 }
 
