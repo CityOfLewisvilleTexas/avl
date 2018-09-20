@@ -157,6 +157,9 @@ td.legendCell {
 	margin: 10px;
 	text-align: center;
 }
+.controlUI:hover{	/*From app_new2.css*/
+	background-color: rgb(235,235,235);
+}
 
 .controlText{
 	color: rgb(25,25,25);
@@ -193,6 +196,9 @@ td.legendCell {
 	word-spacing: normal;
 	text-indent:0px;
 	text-shadow: none;
+}
+.zoomButton:hover{	/*From app_new2.css*/
+	background-color: rgb(235,235,235);
 }
 .zoomButton:first-of-type{
 	border-bottom: 1px solid rgb(235,235,235);

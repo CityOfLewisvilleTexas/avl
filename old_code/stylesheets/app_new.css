@@ -220,6 +220,31 @@ td.legendCell {
 /*.zoomButton .glyphicon:after{
 	clear: both;
 }*/
+.zoomButton.darken{
+	background-color: rgb(235,235,235);
+}
+@media (hover:hover){
+	.controlUI:hover{
+		background-color: rgb(235,235,235);
+	}
+	.zoomButton:hover{
+		background-color: rgb(235,235,235);
+	}
+}
+@media (hover:none), (hover:on-demand){
+	.controlUI:hover{
+		background-color: rgb(255,255,255);
+	}
+	.zoomButton:hover{
+		background-color: rgb(255,255,255);
+	}
+	.controlUI:active{
+		background-color: rgb(235,235,235);
+	}
+	.zoomButton:active{
+		background-color: rgb(235,235,235);
+	}
+}
 
 /* Apply coloring for purple navbar */
 .navbar-default {
@@ -608,13 +633,14 @@ td.legendCell {
 	}
 }
 
+
 /* toughbook specifically  */
 
-@media only screen and (height:768px) and (width:1024px){
-	#leftSide.col-md-7 {
+@media only screen and (device-height: 768px) and (device-width: 1024px){
+	.landscape #leftSide.col-md-7 {
     	width: 66.66666667%;
   	}
-  	#rightSide.col-md-5 {
+  	.landscape #rightSide.col-md-5 {
   		width: 33.33333333%;
   	}
 
