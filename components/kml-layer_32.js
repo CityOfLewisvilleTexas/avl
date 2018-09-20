@@ -16,15 +16,18 @@ Vue.component('kml-layer', VueGoogleMap.MapComponent.extend({
 
 		if (this.layer.refreshinterval){
 			this.layer.toggleInterval = setInterval(function(){
-
+				self.layer.isloading = true;
+				
 				// should set $kml to null?
 				self.$overlay = new google.maps.KmlLayer({
 					url: self.layer.url,
-					map: svc_map.map,
+					map: self.$map,
 					preserveViewport: true
 				});
 				// do we need to set this again?
 				self.layer.mapOverlay = self.$overlay;
+
+				self.layer.isloading = false;
 
 			}, (self.layer.refreshinterval * 1000));
 			
