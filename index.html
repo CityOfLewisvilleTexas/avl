@@ -888,10 +888,10 @@ var app = new Vue({
 		
 		mapOptions: function(){
 			if(!(this.nightMode)){
-				return{zoomControl: false, fullscreenControl: false, streetViewControl: true, gestureHandling: 'greedy', styles: null};
+				return{zoomControl: false, fullscreenControl: false, streetViewControl: true, gestureHandling: 'greedy', styles: null, tilt:0};
 			}
 			else{
-				return{zoomControl: false, fullscreenControl: false, streetViewControl:true, gestureHandling: 'greedy', styles: this.night};
+				return{zoomControl: false, fullscreenControl: false, streetViewControl:true, gestureHandling: 'greedy', styles: this.night, tilt:0};
 			}
 		},
 		
