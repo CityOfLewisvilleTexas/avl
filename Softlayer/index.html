@@ -50,6 +50,7 @@
 	<!-- Vue Google Map -->
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-google-maps/0.1.21/vue-google-maps.js"></script> -->
 	<script src="scripts/vue-google-maps-0.1.21.js?1"></script>
+	<script src="scripts/misc.js"></script>
 	
 	<!-- find -->
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=Array.prototype.find,Array.prototype.findIndex,String.prototype.endsWith"></script>
@@ -436,7 +437,7 @@
 if(window.speechSynthesis){window.speechSynthesis.cancel();}
 
 VueGoogleMap.load({
-	key: 'AIzaSyDARduaVDhGG5z3_D54raucZWFABj2PFvE',
+	key: getMapAPI(),
 	v: '3.32',
 	libraries: 'places,drawing',
 });
