@@ -339,12 +339,12 @@
 								<table class="table table-condensed table-hover layersTable">
 									<tbody>
 										<tr v-for="lyr in filterLayersByGroup(group.id)">
-											<td v-on:click="layerToggle(lyr)" colspan="{{lyr.legendshow.toLowerCase() == 'true' ? '1': '2'}}" class="layerCell">
+											<td v-on:click="layerToggle(lyr)" colspan="{{lyr.legendshow ? '1': '2'}}" class="layerCell">
 												<small><span class="glyphicon" v-bind:class="[{'glyphicon-plus': !(lyr.active), 'glyphicon-ok': lyr.active}]"></span></small>
 												{{lyr.label}}
 												<span class="glyphicon glyphicon-refresh gly-spin" v-if="lyr.isloading"></span>
 											</td>
-											<td v-if="lyr.legendshow.toLowerCase() == 'true'" class="legendCell">
+											<td v-if="lyr.legendshow" class="legendCell">
 												<button class="btn btn-default btn-xs pull-right" v-if="lyr.active == true && (lyr.legend.length > 0)" v-on:click="chooseGIS = lyr.label"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
 											</td>
 										</tr>
@@ -1078,7 +1078,7 @@ var app = new Vue({
 		},
 		filterLayers_Legend: function(){
 			return this.layers.filter(function(lyr){
-				return (lyr.filetype.toLowerCase() == 'mapservice' && lyr.active == true && lyr.legendshow.toLowerCase() == "true" && (lyr.legend.length > 0) );
+				return (lyr.filetype.toLowerCase() == 'mapservice' && lyr.legendshow && lyr.legend );
 			}).sort(function(a, b){
 				return a.toggleOrder - b.toggleOrder;
 			});
@@ -1600,11 +1600,15 @@ var app = new Vue({
 			// Get layer information from Google Spreadsheet
 			var self = this;
 			var lyr;
-			this.$http.get("https://spreadsheets.google.com/feeds/list/1q2t8kR4fme1D0Us2EZmsj3LjBQ2QxD0lfl2db68hF2Q/1/public/values?&alt=json&sq=label%3E%22%22%20and%20id%3C%3E%22ID%22").then(
-			function(response) {
+			//this.$http.get("https://spreadsheets.google.com/feeds/list/2PACX-1vQyE6030tRHmh3t5FmoZasNAHLZeO8wZflFK7bCz5FeEe6MqfpTjsTNSB5SzDJCT6oFRH6KC3URGuc1/1/od6/public/values?alt=json").then(
+			$.post('https://query.cityoflewisville.com/v2/',{
+				webservice : 'AVL/Get GIS Layers ',
+				auth_token: localStorage.colAuthToken
+			},
+			function(data) {
 				//Success Callback
 				
-				self.layers = response.body.feed.entry.map(function(obj, i){
+				/*self.layers = response.body.feed.entry.map(function(obj, i){
 					lyr = {};
 					Object.keys(obj).forEach(function(x){
 						if(x.substr(0,4)=='gsx$' || x=='updated'){
@@ -1616,6 +1620,23 @@ var app = new Vue({
 							}
 						}
 					});
+				*/
+
+				self.layers = data.layers.map(function(obj, i){
+					lyr = {};
+					Object.keys(obj).forEach(function(x){
+						if(x == 'infowindowcolumns'){
+							if(obj[x]){
+								lyr[x] = obj[x].split(",").map(function(obj){return obj.toLowerCase()});
+							}
+							else{
+								lyr[x] = obj[x];
+							}
+						}
+						else{
+							lyr[x] = obj[x];
+						}
+					});
 					
 					// Set other properties for each layer object
 					lyr.isloading = false;
@@ -1625,7 +1646,7 @@ var app = new Vue({
 					
 					// Activate layers if open on load is true
 					//if(lyr.id == 1005){
-					if(lyr.avlopenonload.toLowerCase() == "true"){
+					if(lyr.avlopenonload){
 						lyr.active = true;
 					}
 					else{
@@ -1636,8 +1657,8 @@ var app = new Vue({
 				});
 				
 				//console.log(self.layers);
-				
-			}, function (response) {
+			})
+			.fail(function(data){
 				// error callback
 				alert("Error loading GIS Layers - no response from spreadsheet");
 			});
@@ -1684,22 +1705,20 @@ var app = new Vue({
 			//console.log('loadComplaintAudio');
 			var self = this;
 			var complaint;
-			this.$http.get("https://spreadsheets.google.com/feeds/list/1DtV1BcT3CBH7uxXXPzbTmFwQY6Npd4wA08z9hYzvROI/1/public/values?&alt=json&sq=complaint%3E%22%22").then(
-			function(response) {
+			//this.$http.get("https://spreadsheets.google.com/feeds/list/1DtV1BcT3CBH7uxXXPzbTmFwQY6Npd4wA08z9hYzvROI/1/public/values?&alt=json&sq=complaint%3E%22%22").then(
+			$.post('https://query.cityoflewisville.com/v2/',{
+				webservice : 'AVL/Get Complaint Audio',
+				auth_token: localStorage.colAuthToken
+			},
+			function(data) {
+				console.log("complaintAudio");
+				console.log(data);
 				//Success Callback
-				self.complaintAudio = response.body.feed.entry.map(function(obj, i){
-					complaint = {};
-					Object.keys(obj).forEach(function(x){
-						if(x.substr(0,4)=='gsx$' || x=='updated'){
-								complaint[x.replace('gsx$','')] = obj[x].$t;
-						}
-					});
-					
-					return complaint;
-				});
+				self.complaintAudio = data.ComplaintAudio;
 				self.complaintAudioFound = true;
 				
-			}, function (response) {
+			})
+			.fail(function(response){
 				// error callback
 				//console.log('err');
 				setTimeout(function(){app.loadComplaintAudio();}, 10000);

@@ -46,7 +46,7 @@ Vue.component('map-service-layer', VueGoogleMap.MapComponent.extend({
 			__doOnDrawEnd: function(){                                    // <---Custom property added to arcgislink.js module by JKIRKLAND 10/2016										
 				setTimeout(function(){			/* Jason used $timeout which is Angular, use Window method instead - clarson 8/16/18 */
 					/* Where did this come from? It's not in Jason's (anymore 8/16) - clarson 8/16/18 */
-					if(self.layer.legendshow.toLowerCase() == "true"){
+					if(self.layer.legendshow){
 						//console.log(self.$service.layers[0].legend);
 						self.layer.legend = self.$service.layers[0].legend;
 					}
